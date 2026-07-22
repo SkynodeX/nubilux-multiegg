@@ -1,0 +1,72 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2024-01-01T00:00:00+00:00",
+    "name": "Nubilux Multiegg Custom",
+    "author": "SkynodeX@github.com",
+    "description": "An all-in-one advanced Multiegg built with a custom Docker image. Supports Java, NodeJS, and Python.",
+    "features": null,
+    "docker_images": {
+        "Nubilux Custom Image (All-in-One)": "ghcr.io/skynodex/nubilux-multiegg:latest"
+    },
+    "file_denylist": [],
+    "startup": "/bin/bash /entrypoint.sh",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \",\r\n    \"userInteraction\": [\r\n        \"Go to eula.txt for more info.\"\r\n    ]\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\r\necho \"Installation is handled by the custom Docker entrypoint automatically.\"",
+            "container": "alpine:3.14",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Java Version",
+            "description": "Select the Java version if you are running a Minecraft server (8, 11, 17, 21). Has no effect on NodeJS/Python.",
+            "env_variable": "JAVA_VERSION",
+            "default_value": "21",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|in:8,11,17,21",
+            "field_type": "text"
+        },
+        {
+            "name": "Optimize Server (Admin)",
+            "description": "Automatically optimize server.properties and bukkit.yml to improve performance.",
+            "env_variable": "OPTIMIZE_SERVER",
+            "default_value": "0",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Forced MOTD (Admin)",
+            "description": "Force the MOTD branding on the server.",
+            "env_variable": "HOSTING_NAME",
+            "default_value": "Nubilux Hosting",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "SIMD Operations",
+            "description": "Enable SIMD vector operations for better Minecraft performance (Requires Java 16+).",
+            "env_variable": "SIMD_OPERATIONS",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        }
+    ]
+}
