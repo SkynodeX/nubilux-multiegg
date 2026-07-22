@@ -113,6 +113,14 @@ function minecraft_menu {
             ;;
     esac
     
+    # Verify the download succeeded (file exists and is > 1MB roughly, or just > 100KB)
+    # A corrupt jar or 404 page is usually very small.
+    if [ ! -f "server.jar" ] || [ $(stat -c%s "server.jar") -lt 1000000 ]; then
+        echo -e "\e[31m[!] Failed to download the server software. The version might be invalid.\e[0m"
+        rm -f server.jar
+        exit 1
+    fi
+    
     accept_eula
     touch .nubilux_installed
     echo -e "\e[32m[+] Minecraft installation complete! Restarting server...\e[0m"
