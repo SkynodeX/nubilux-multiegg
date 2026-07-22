@@ -36,11 +36,16 @@ function handle_motd {
 function minecraft_menu {
     echo ""
     echo "Choose your Minecraft Software:"
-    echo "1) Paper"
-    echo "2) Purpur"
-    echo "3) Vanilla"
-    read -p "Choice (1-3): " mc_choice
-    read -p "Enter Minecraft Version (e.g., 1.20.4, 1.8.8): " version
+    echo "1) Paper (Standard Server)"
+    echo "2) Purpur (Standard Server)"
+    echo "3) Vanilla (Standard Server)"
+    echo "4) Velocity (Proxy)"
+    echo "5) BungeeCord (Proxy)"
+    read -p "Choice (1-5): " mc_choice
+    
+    if [ "$mc_choice" != "5" ]; then
+        read -p "Enter Version (e.g., 1.20.4, 1.8.8, or 3.3.0 for Velocity): " version
+    fi
     
     case $mc_choice in
         1)
@@ -57,6 +62,17 @@ function minecraft_menu {
             manifest_url=$(curl -s "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg VERSION "$version" '.versions[] | select(.id == $VERSION) | .url')
             server_url=$(curl -s "$manifest_url" | jq -r '.downloads.server.url')
             curl -o server.jar "$server_url"
+            ;;
+        4)
+            # Fetch velocity
+            build=$(curl -s "https://api.papermc.io/v2/projects/velocity/versions/$version" | jq -r '.builds[-1]')
+            url="https://api.papermc.io/v2/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar"
+            curl -o server.jar "$url"
+            ;;
+        5)
+            # Fetch latest bungeecord
+            url="https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"
+            curl -o server.jar "$url"
             ;;
         *)
             echo "Invalid choice. Aborting."
