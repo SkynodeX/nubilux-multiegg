@@ -27,7 +27,8 @@ function python_menu {
     if [ ! -f "requirements.txt" ]; then
         touch requirements.txt
     fi
-    
+    echo "Would you like to install discord.py boilerplate? (y/n): "
+    read install_boilerplate
     touch .nubilux_installed
     echo -e "\e[32m[+] Python environment ready. Please upload your bot files to the server.\e[0m"
     exec /bin/bash /entrypoint.sh

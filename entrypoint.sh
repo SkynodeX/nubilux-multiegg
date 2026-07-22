@@ -12,7 +12,7 @@ echo -e "\e[33m | \ | |     | |   (_) |           \e[0m"
 echo -e "\e[32m |  \| |_   _| |__  _| |_   ___  __\e[0m"
 echo -e "\e[36m | . \` | | | | '_ \| | | | | \ \/ /\e[0m"
 echo -e "\e[34m | |\  | |_| | |_) | | | |_| |>  < \e[0m"
-echo -e "\e[35m |_| \_|\__,_|_.__/|_|_|\__,_/_/\_\\\e[0m"
+echo -e "\e[35m |_| \_|\__,_|_.__/|_|_|\__,_/_/\_\ \e[0m"
 echo -e "\e[1;36m=====================================\e[0m"
 echo -e "\e[1;33m Welcome to Nubilux Hosting Multiegg!\e[0m"
 echo -e "\e[1;36m=====================================\e[0m"
@@ -45,7 +45,8 @@ else
         echo -e "\e[32m4)\e[0m Minecraft: Bedrock Edition"
         echo -e "\e[31m5)\e[0m Exit Installer"
         echo ""
-        read -p "Your choice (1-5): " choice
+        echo "Your choice (1-5): "
+        read choice
         
         case $choice in
             1)

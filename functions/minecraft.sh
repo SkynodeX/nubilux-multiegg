@@ -72,10 +72,12 @@ function minecraft_menu {
     echo "3) Vanilla (Standard Server)"
     echo "4) Velocity (Proxy)"
     echo "5) BungeeCord (Proxy)"
-    read -p "Choice (1-5): " mc_choice
+    echo "Choice (1-5): "
+    read mc_choice
     
     if [ "$mc_choice" != "5" ]; then
-        read -p "Enter Version (e.g., 1.20.4, 1.8.8, or 3.3.0 for Velocity): " version
+        echo "Enter Version (e.g., 1.20.4, 1.8.8, or 3.3.0 for Velocity): "
+        read version
     fi
     
     case $mc_choice in
