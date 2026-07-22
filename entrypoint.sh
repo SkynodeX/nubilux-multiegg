@@ -7,16 +7,15 @@ for file in /functions/*.sh; do
 done
 
 clear
-echo -e "\e[36m"
-echo "  _   _       _     _ _            "
-echo " | \ | |     | |   (_) |           "
-echo " |  \| |_   _| |__  _| |_   ___  __"
-echo " | . \` | | | | '_ \| | | | | \ \/ /"
-echo " | |\  | |_| | |_) | | | |_| |>  < "
-echo " |_| \_|\__,_|_.__/|_|_|\__,_/_/\_\\"
-echo -e "\e[0m"
-echo -e "\e[33mWelcome to Nubilux Hosting Multiegg!\e[0m"
-echo "====================================="
+echo -e "\e[31m  _   _       _     _ _            \e[0m"
+echo -e "\e[33m | \ | |     | |   (_) |           \e[0m"
+echo -e "\e[32m |  \| |_   _| |__  _| |_   ___  __\e[0m"
+echo -e "\e[36m | . \` | | | | '_ \| | | | | \ \/ /\e[0m"
+echo -e "\e[34m | |\  | |_| | |_) | | | |_| |>  < \e[0m"
+echo -e "\e[35m |_| \_|\__,_|_.__/|_|_|\__,_/_/\_\\\e[0m"
+echo -e "\e[1;36m=====================================\e[0m"
+echo -e "\e[1;33m Welcome to Nubilux Hosting Multiegg!\e[0m"
+echo -e "\e[1;36m=====================================\e[0m"
 
 # Check if environment is already configured
 if [ -f ".nubilux_installed" ]; then
