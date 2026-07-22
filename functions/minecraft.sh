@@ -83,8 +83,8 @@ function minecraft_menu {
     case $mc_choice in
         1)
             # Fetch paper
-            build=$(curl -s "https://api.papermc.io/v2/projects/paper/versions/$version" | jq -r '.builds[-1]')
-            url="https://api.papermc.io/v2/projects/paper/versions/${version}/builds/${build}/downloads/paper-${version}-${build}.jar"
+            build=$(curl -s "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[-1]')
+            url="https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}/downloads/paper-${version}-${build}.jar"
             curl -o server.jar "$url"
             ;;
         2)
@@ -98,8 +98,8 @@ function minecraft_menu {
             ;;
         4)
             # Fetch velocity
-            build=$(curl -s "https://api.papermc.io/v2/projects/velocity/versions/$version" | jq -r '.builds[-1]')
-            url="https://api.papermc.io/v2/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar"
+            build=$(curl -s "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[-1]')
+            url="https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar"
             curl -o server.jar "$url"
             ;;
         5)
