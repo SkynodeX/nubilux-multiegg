@@ -7,16 +7,34 @@ function accept_eula {
 
 function handle_optimization {
     if [ "$OPTIMIZE_SERVER" == "1" ]; then
-        echo -e "\e[36m[~] Auto-optimizing server properties...\e[0m"
+        echo -e "\e[36m[~] Auto-optimizing server properties for EXTREME performance...\e[0m"
         # If server.properties doesn't exist, create it
         if [ ! -f "server.properties" ]; then
             touch server.properties
         fi
         
-        # Lower view distance
-        sed -i 's/^view-distance=.*/view-distance=6/' server.properties || echo "view-distance=6" >> server.properties
-        sed -i 's/^network-compression-threshold=.*/network-compression-threshold=512/' server.properties || echo "network-compression-threshold=512" >> server.properties
-        echo -e "\e[32m[+] Optimization applied.\e[0m"
+        # Aggressive View & Simulation distances
+        sed -i '/^view-distance=/d' server.properties
+        echo "view-distance=4" >> server.properties
+        
+        sed -i '/^simulation-distance=/d' server.properties
+        echo "simulation-distance=3" >> server.properties
+        
+        sed -i '/^network-compression-threshold=/d' server.properties
+        echo "network-compression-threshold=256" >> server.properties
+        
+        # Inject extreme spigot.yml base optimization if missing
+        if [ ! -f "spigot.yml" ]; then
+            echo "world-settings:" > spigot.yml
+            echo "  default:" >> spigot.yml
+            echo "    entity-activation-range:" >> spigot.yml
+            echo "      animals: 16" >> spigot.yml
+            echo "      monsters: 24" >> spigot.yml
+            echo "      misc: 8" >> spigot.yml
+            echo "      tick-inactive-villagers: false" >> spigot.yml
+        fi
+        
+        echo -e "\e[32m[+] Extreme Optimization applied.\e[0m"
     fi
 }
 
@@ -100,15 +118,21 @@ function boot_minecraft {
         SIMD_ARG="--add-modules=jdk.incubator.vector"
     fi
     
-    # We dynamically select java version based on the user's input in the panel
     JAVA_CMD="java"
-    if [ "$JAVA_VERSION" == "21" ]; then JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"; fi
+    # Base Aikar Flags
+    GC_FLAGS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
+    
+    if [ "$JAVA_VERSION" == "21" ]; then 
+        JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+        if [ "$OPTIMIZE_SERVER" == "1" ]; then
+            # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
+            GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
+        fi
+    fi
     if [ "$JAVA_VERSION" == "17" ]; then JAVA_CMD="/usr/lib/jvm/java-17-openjdk-amd64/bin/java"; fi
     if [ "$JAVA_VERSION" == "11" ]; then JAVA_CMD="/usr/lib/jvm/java-11-openjdk-amd64/bin/java"; fi
     if [ "$JAVA_VERSION" == "8" ];  then JAVA_CMD="/usr/lib/jvm/java-8-openjdk-amd64/bin/java";  fi
 
     echo -e "\e[32m[+] Starting Minecraft Server with $JAVA_CMD...\e[0m"
-    exec $JAVA_CMD $MEM_ARG $SIMD_ARG \
-        -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC \
-        -jar server.jar nogui
+    exec $JAVA_CMD $MEM_ARG $SIMD_ARG $GC_FLAGS -jar server.jar nogui
 }
