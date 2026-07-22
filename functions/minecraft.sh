@@ -13,7 +13,7 @@ function handle_optimization {
             touch server.properties
         fi
         
-        # Aggressive View & Simulation distances
+        # Aggressive View & Simulation distances (ENFORCED ON EVERY BOOT)
         sed -i '/^view-distance=/d' server.properties
         echo "view-distance=4" >> server.properties
         
@@ -23,7 +23,7 @@ function handle_optimization {
         sed -i '/^network-compression-threshold=/d' server.properties
         echo "network-compression-threshold=256" >> server.properties
         
-        # Inject extreme spigot.yml base optimization if missing
+        # Inject or OVERRIDE extreme spigot.yml base optimization
         if [ ! -f "spigot.yml" ]; then
             echo "world-settings:" > spigot.yml
             echo "  default:" >> spigot.yml
@@ -32,9 +32,22 @@ function handle_optimization {
             echo "      monsters: 24" >> spigot.yml
             echo "      misc: 8" >> spigot.yml
             echo "      tick-inactive-villagers: false" >> spigot.yml
+        else
+            # Forcefully overwrite values in existing spigot.yml (in case they uploaded a setup)
+            python3 -c "
+import re
+try:
+    with open('spigot.yml', 'r') as f: content = f.read()
+    content = re.sub(r'animals:\s*\d+', 'animals: 16', content)
+    content = re.sub(r'monsters:\s*\d+', 'monsters: 24', content)
+    content = re.sub(r'misc:\s*\d+', 'misc: 8', content)
+    content = re.sub(r'tick-inactive-villagers:\s*(true|false)', 'tick-inactive-villagers: false', content)
+    with open('spigot.yml', 'w') as f: f.write(content)
+except: pass
+"
         fi
         
-        echo -e "\e[32m[+] Extreme Optimization applied.\e[0m"
+        echo -e "\e[32m[+] Extreme Optimization applied and ENFORCED.\e[0m"
     fi
 }
 
