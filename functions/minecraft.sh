@@ -213,7 +213,7 @@ function boot_minecraft {
       version_id=$(unzip -p server.jar version.json 2>/dev/null | grep -o '"id": *"[^"]*"' | cut -d'"' -f4)
       
       detected_java="unknown"
-      if [[ "$version_id" == 1.21.2* ]] || [[ "$version_id" == 1.21.3* ]] || [[ "$version_id" == 26* ]] || [[ "$version_id" == 27* ]]; then
+      if [[ "$version_id" == 1.21.1* ]] || [[ "$version_id" == 1.21.2* ]] || [[ "$version_id" == 1.21.3* ]] || [[ "$version_id" == 26* ]] || [[ "$version_id" == 27* ]]; then
           detected_java="25"
       elif [[ "$version_id" == 1.20.5* ]] || [[ "$version_id" == 1.20.6* ]] || [[ "$version_id" == 1.21* ]]; then
           detected_java="21"
