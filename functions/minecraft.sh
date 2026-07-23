@@ -149,21 +149,53 @@ function boot_minecraft {
     JAVA_CMD="java"
     # Base Aikar Flags
     GC_FLAGS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
-    
-    if [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
-        JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
-    elif [ "$JAVA_VERSION" == "21" ]; then 
-        JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
-        if [ "$OPTIMIZE_SERVER" == "1" ]; then
-            # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
-            GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
-        fi
-    else
-        JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
-    fi
-    if [ "$JAVA_VERSION" == "17" ]; then JAVA_CMD="/usr/lib/jvm/java-17-openjdk-amd64/bin/java"; fi
-    if [ "$JAVA_VERSION" == "11" ]; then JAVA_CMD="/usr/lib/jvm/java-11-openjdk-amd64/bin/java"; fi
-    if [ "$JAVA_VERSION" == "8" ];  then JAVA_CMD="/usr/lib/jvm/java-8-openjdk-amd64/bin/java";  fi
+        detected_java=$(python3 -c '
+import zipfile, sys
+try:
+    with zipfile.ZipFile("server.jar", "r") as z:
+        manifest = z.read("META-INF/MANIFEST.MF").decode("utf-8")
+        main_class = next((line.split(":")[1].strip().replace(".", "/") + ".class" for line in manifest.splitlines() if line.startswith("Main-Class:")), None)
+        if main_class and main_class in z.namelist():
+            major = z.read(main_class)[7]
+            if major <= 52: print("8")
+            elif major <= 55: print("11")
+            elif major <= 61: print("17")
+            elif major <= 65: print("21")
+            else: print("25")
+            sys.exit(0)
+except: pass
+print("unknown")
+')
+
+      if [ "$detected_java" == "25" ] || [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
+          JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
+      elif [ "$detected_java" == "21" ]; then
+          JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+      elif [ "$detected_java" == "17" ]; then
+          JAVA_CMD="/usr/lib/jvm/java-17-openjdk-amd64/bin/java"
+      elif [ "$detected_java" == "11" ]; then
+          JAVA_CMD="/usr/lib/jvm/java-11-openjdk-amd64/bin/java"
+      elif [ "$detected_java" == "8" ]; then
+          JAVA_CMD="/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
+      else
+          # Fallback to Pterodactyl Env Variable
+          if [ "$JAVA_VERSION" == "21" ]; then 
+              JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+          elif [ "$JAVA_VERSION" == "17" ]; then 
+              JAVA_CMD="/usr/lib/jvm/java-17-openjdk-amd64/bin/java"
+          elif [ "$JAVA_VERSION" == "11" ]; then 
+              JAVA_CMD="/usr/lib/jvm/java-11-openjdk-amd64/bin/java"
+          elif [ "$JAVA_VERSION" == "8" ]; then 
+              JAVA_CMD="/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
+          else
+              JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+          fi
+      fi
+      
+      if [[ "$JAVA_CMD" == *java-21* ]] && [ "$OPTIMIZE_SERVER" == "1" ]; then
+          # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
+          GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
+      fi
 
     echo -e "\e[32m[+] Starting Minecraft Server with $JAVA_CMD...\e[0m"
     exec $JAVA_CMD $MEM_ARG $SIMD_ARG $GC_FLAGS -jar server.jar nogui
