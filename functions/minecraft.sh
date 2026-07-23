@@ -52,8 +52,8 @@ except: pass
 }
 
 function handle_motd {
-    if [ -n "$HOSTING_NAME" ]; then
-        echo -e "\e[36m[~] Injecting Forced Branding MOTD...\e[0m"
+    if [ -n "$HOSTING_NAME" ] && [ ! -f ".cache/nubilux/motd_set" ]; then
+        echo -e "\e[36m[~] Injecting Initial Branding MOTD...\e[0m"
         if [ ! -f "server.properties" ]; then
             touch server.properties
         fi
@@ -61,6 +61,9 @@ function handle_motd {
         # Remove existing motd and append ours
         sed -i '/^motd=/d' server.properties
         echo "motd=Powered by $HOSTING_NAME" >> server.properties
+        
+        # Mark as set so we don't overwrite it on future boots
+        touch .cache/nubilux/motd_set
     fi
 }
 
