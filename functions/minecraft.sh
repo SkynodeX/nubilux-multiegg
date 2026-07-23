@@ -122,12 +122,17 @@ function minecraft_menu {
     fi
     
     accept_eula
+    echo "$version" > .mc_version
     touch .nubilux_installed
     echo -e "\e[32m[+] Minecraft installation complete! Restarting server...\e[0m"
     exec /bin/bash /entrypoint.sh
 }
 
 function boot_minecraft {
+    if [ -f .mc_version ]; then
+        version=$(cat .mc_version)
+    fi
+    
     handle_optimization
     handle_motd
 
@@ -151,6 +156,10 @@ function boot_minecraft {
             # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
             GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
         fi
+    elif [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
+        JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
+    else
+        JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
     fi
     if [ "$JAVA_VERSION" == "17" ]; then JAVA_CMD="/usr/lib/jvm/java-17-openjdk-amd64/bin/java"; fi
     if [ "$JAVA_VERSION" == "11" ]; then JAVA_CMD="/usr/lib/jvm/java-11-openjdk-amd64/bin/java"; fi

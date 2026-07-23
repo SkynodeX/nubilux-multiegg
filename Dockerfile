@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /usr/lib/jvm/java-25-openjdk-amd64 && \
+    curl -sL "https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jre/hotspot/normal/eclipse?project=jdk" | tar -xz -C /usr/lib/jvm/java-25-openjdk-amd64 --strip-components=1
+
 USER container
 ENV USER=container HOME=/home/container
 WORKDIR /home/container
