@@ -150,19 +150,32 @@ function boot_minecraft {
     # Base Aikar Flags
     GC_FLAGS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
         detected_java=$(python3 -c '
-import zipfile, sys
+import zipfile, sys, io
 try:
     with zipfile.ZipFile("server.jar", "r") as z:
         manifest = z.read("META-INF/MANIFEST.MF").decode("utf-8")
         main_class = next((line.split(":")[1].strip().replace(".", "/") + ".class" for line in manifest.splitlines() if line.startswith("Main-Class:")), None)
+        major = 0
         if main_class and main_class in z.namelist():
             major = z.read(main_class)[7]
-            if major <= 52: print("8")
-            elif major <= 55: print("11")
-            elif major <= 61: print("17")
-            elif major <= 65: print("21")
-            else: print("25")
-            sys.exit(0)
+        
+        for name in z.namelist():
+            if name.startswith("META-INF/versions/") and name.endswith(".jar"):
+                with z.open(name) as inner:
+                    with zipfile.ZipFile(io.BytesIO(inner.read()), "r") as inner_z:
+                        inner_manifest = inner_z.read("META-INF/MANIFEST.MF").decode("utf-8")
+                        inner_main = next((line.split(":")[1].strip().replace(".", "/") + ".class" for line in inner_manifest.splitlines() if line.startswith("Main-Class:")), None)
+                        if inner_main and inner_main in inner_z.namelist():
+                            inner_major = inner_z.read(inner_main)[7]
+                            if inner_major > major: major = inner_major
+                            
+        if major == 0: print("unknown")
+        elif major <= 52: print("8")
+        elif major <= 55: print("11")
+        elif major <= 61: print("17")
+        elif major <= 65: print("21")
+        else: print("25")
+        sys.exit(0)
 except: pass
 print("unknown")
 ')
