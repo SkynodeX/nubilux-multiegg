@@ -141,11 +141,6 @@ function boot_minecraft {
         MEM_ARG="-Xmx${SERVER_MEMORY}M -Xms128M"
     fi
     
-    SIMD_ARG=""
-    if [ "$SIMD_OPERATIONS" == "1" ]; then
-        SIMD_ARG="--add-modules=jdk.incubator.vector"
-    fi
-    
     JAVA_CMD="java"
     # Base Aikar Flags
     GC_FLAGS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
@@ -206,6 +201,12 @@ print("unknown")
           else
               JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
           fi
+      fi
+      
+      SIMD_ARG=""
+      if [[ "$JAVA_CMD" == *java-21* ]] || [[ "$JAVA_CMD" == *java-25* ]] || [[ "$JAVA_CMD" == *java-17* ]]; then
+          # SIMD vector API is fully supported on Java 17+ and heavily boosts PaperMC performance
+          SIMD_ARG="--add-modules=jdk.incubator.vector"
       fi
       
       if { [[ "$JAVA_CMD" == *java-21* ]] || [[ "$JAVA_CMD" == *java-25* ]]; } && [ "$OPTIMIZE_SERVER" == "1" ]; then
