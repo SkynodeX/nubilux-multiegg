@@ -84,7 +84,7 @@ function minecraft_menu {
         1)
             # Fetch paper
             build=$(curl -s "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[-1]')
-            url="https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}/downloads/paper-${version}-${build}.jar"
+            url=$(curl -s "https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}" | jq -r '.downloads | to_entries | .[0].value.url')
             curl -o server.jar "$url"
             ;;
         2)
@@ -99,7 +99,7 @@ function minecraft_menu {
         4)
             # Fetch velocity
             build=$(curl -s "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[-1]')
-            url="https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar"
+            url=$(curl -s "https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}" | jq -r '.downloads | to_entries | .[0].value.url')
             curl -o server.jar "$url"
             ;;
         5)
