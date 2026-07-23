@@ -65,7 +65,7 @@ function handle_motd {
 }
 
 function minecraft_menu {
-    mkdir -p .nubilux
+    mkdir -p .cache/nubilux
     echo ""
     echo "Choose your Minecraft Software:"
     echo "1) Paper (Standard Server)"
@@ -87,13 +87,13 @@ function minecraft_menu {
             build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[0]')
             url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
             curl -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
-            echo "$build" > .nubilux/mc_build
+            echo "$build" > .cache/nubilux/mc_build
             ;;
         2)
             build=$(curl -s "https://api.purpurmc.org/v2/purpur/$version" | jq -r '.builds.latest')
             url="https://api.purpurmc.org/v2/purpur/${version}/latest/download"
             curl -o server.jar "$url"
-            echo "$build" > .nubilux/mc_build
+            echo "$build" > .cache/nubilux/mc_build
             ;;
         3)
             manifest_url=$(curl -s "https://launchermeta.mojang.com/mc/game/version_manifest.json" | jq -r --arg VERSION "$version" '.versions[] | select(.id == $VERSION) | .url')
@@ -105,7 +105,7 @@ function minecraft_menu {
             build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[0]')
             url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
             curl -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
-            echo "$build" > .nubilux/mc_build
+            echo "$build" > .cache/nubilux/mc_build
             ;;
         5)
             # Fetch latest bungeecord
@@ -127,20 +127,20 @@ function minecraft_menu {
     fi
     
     accept_eula
-    echo "$version" > .nubilux/mc_version
-    echo "$mc_choice" > .nubilux/mc_choice
-    touch .nubilux/.installed
+    echo "$version" > .cache/nubilux/mc_version
+    echo "$mc_choice" > .cache/nubilux/mc_choice
+    touch .cache/nubilux/.installed
     echo -e "\e[32m[+] Minecraft installation complete! Restarting server...\e[0m"
     exec /bin/bash /entrypoint.sh
 }
 
 function auto_update {
-    if [ "$AUTO_UPDATE" == "1" ] && [ -f ".nubilux/mc_version" ] && [ -f ".nubilux/mc_choice" ]; then
-        mc_choice=$(cat .nubilux/mc_choice)
-        version=$(cat .nubilux/mc_version)
+    if [ "$AUTO_UPDATE" == "1" ] && [ -f ".cache/nubilux/mc_version" ] && [ -f ".cache/nubilux/mc_choice" ]; then
+        mc_choice=$(cat .cache/nubilux/mc_choice)
+        version=$(cat .cache/nubilux/mc_version)
         current_build=""
-        if [ -f ".nubilux/mc_build" ]; then
-            current_build=$(cat .nubilux/mc_build)
+        if [ -f ".cache/nubilux/mc_build" ]; then
+            current_build=$(cat .cache/nubilux/mc_build)
         fi
         
         echo -e "\e[36m[~] Auto-Update is enabled! Checking for updates...\e[0m"
@@ -152,7 +152,7 @@ function auto_update {
                         echo -e "\e[36m[~] Updating Paper from build $current_build to $build...\e[0m"
                         url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
                         curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
-                        echo "$build" > .nubilux/mc_build
+                        echo "$build" > .cache/nubilux/mc_build
                         echo -e "\e[32m[+] Successfully updated Paper!\e[0m"
                     else
                         echo -e "\e[32m[+] Server is already on the latest build ($build)!\e[0m"
@@ -166,7 +166,7 @@ function auto_update {
                         echo -e "\e[36m[~] Updating Purpur to build $build...\e[0m"
                         url="https://api.purpurmc.org/v2/purpur/${version}/latest/download"
                         curl -s -o server.jar "$url"
-                        echo "$build" > .nubilux/mc_build
+                        echo "$build" > .cache/nubilux/mc_build
                         echo -e "\e[32m[+] Successfully updated Purpur!\e[0m"
                     else
                         echo -e "\e[32m[+] Server is already on the latest build ($build)!\e[0m"
@@ -180,7 +180,7 @@ function auto_update {
                         echo -e "\e[36m[~] Updating Velocity from build $current_build to $build...\e[0m"
                         url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
                         curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
-                        echo "$build" > .nubilux/mc_build
+                        echo "$build" > .cache/nubilux/mc_build
                         echo -e "\e[32m[+] Successfully updated Velocity!\e[0m"
                     else
                         echo -e "\e[32m[+] Server is already on the latest build ($build)!\e[0m"
@@ -192,8 +192,8 @@ function auto_update {
 }
 
 function boot_minecraft {
-    if [ -f .nubilux/mc_version ]; then
-        version=$(cat .nubilux/mc_version)
+    if [ -f .cache/nubilux/mc_version ]; then
+        version=$(cat .cache/nubilux/mc_version)
     fi
     
     auto_update

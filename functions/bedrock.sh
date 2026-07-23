@@ -1,5 +1,5 @@
 function bedrock_menu {
-    mkdir -p .nubilux
+    mkdir -p .cache/nubilux
     echo ""
     echo -e "\e[36m[~] Fetching latest Bedrock Server version from Microsoft...\e[0m"
     
@@ -21,7 +21,7 @@ function bedrock_menu {
     # Make the binary executable
     chmod +x bedrock_server
     
-    touch .nubilux/.installed
+    touch .cache/nubilux/.installed
     echo -e "\e[32m[+] Bedrock installation complete! Restarting server...\e[0m"
     exec /bin/bash /entrypoint.sh
 }

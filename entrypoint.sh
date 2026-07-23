@@ -19,15 +19,20 @@ echo -e "\e[1;36m=====================================\e[0m"
 
 # Auto-migrate old loose dotfiles to hidden directory for cleaner file manager
 if [ -f ".nubilux_installed" ]; then
-    mkdir -p .nubilux
-    mv .nubilux_installed .nubilux/.installed
-    [ -f .mc_version ] && mv .mc_version .nubilux/mc_version
-    [ -f .mc_choice ] && mv .mc_choice .nubilux/mc_choice
-    [ -f .mc_build ] && mv .mc_build .nubilux/mc_build
+    mkdir -p .cache/nubilux
+    mv .nubilux_installed .cache/nubilux/.installed
+    [ -f .mc_version ] && mv .mc_version .cache/nubilux/mc_version
+    [ -f .mc_choice ] && mv .mc_choice .cache/nubilux/mc_choice
+    [ -f .mc_build ] && mv .mc_build .cache/nubilux/mc_build
+fi
+
+if [ -d ".nubilux" ] && [ ! -d ".cache/nubilux" ]; then
+    mkdir -p .cache
+    mv .nubilux .cache/nubilux
 fi
 
 # Check if environment is already configured
-if [ -f ".nubilux/.installed" ]; then
+if [ -f ".cache/nubilux/.installed" ]; then
     echo -e "\e[32m[+] Server already configured. Booting...\e[0m"
     
     # Check what type of server it is

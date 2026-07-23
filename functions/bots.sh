@@ -2,7 +2,7 @@
 # Discord Bots functionality (NodeJS & Python)
 
 function nodejs_menu {
-    mkdir -p .nubilux
+    mkdir -p .cache/nubilux
     echo ""
     echo -e "\e[36m[~] Setting up NodeJS Environment...\e[0m"
     
@@ -13,13 +13,13 @@ function nodejs_menu {
         echo 'console.log("Hello from NodeJS! Please upload your bot files.");' > index.js
     fi
     
-    touch .nubilux/.installed
+    touch .cache/nubilux/.installed
     echo -e "\e[32m[+] NodeJS environment ready. Please upload your bot files to the server.\e[0m"
     exec /bin/bash /entrypoint.sh
 }
 
 function python_menu {
-    mkdir -p .nubilux
+    mkdir -p .cache/nubilux
     echo ""
     echo -e "\e[36m[~] Setting up Python Environment...\e[0m"
     
@@ -31,7 +31,7 @@ function python_menu {
     fi
     echo "Would you like to install discord.py boilerplate? (y/n): "
     read install_boilerplate
-    touch .nubilux/.installed
+    touch .cache/nubilux/.installed
     echo -e "\e[32m[+] Python environment ready. Please upload your bot files to the server.\e[0m"
     exec /bin/bash /entrypoint.sh
 }
