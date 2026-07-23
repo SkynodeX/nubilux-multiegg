@@ -26,11 +26,6 @@ if [ -f ".nubilux_installed" ]; then
     [ -f .mc_build ] && mv .mc_build .cache/nubilux/mc_build
 fi
 
-if [ -d ".nubilux" ] && [ ! -d ".cache/nubilux" ]; then
-    mkdir -p .cache
-    mv .nubilux .cache/nubilux
-fi
-
 # Check if environment is already configured
 if [ -f ".cache/nubilux/.installed" ]; then
     echo -e "\e[32m[+] Server already configured. Booting...\e[0m"
@@ -45,8 +40,11 @@ if [ -f ".cache/nubilux/.installed" ]; then
     elif [ -f "main.py" ] || [ -f "bot.py" ] || [ -f "requirements.txt" ]; then
         boot_python
     else
-        echo -e "\e[31m[!] Cannot determine server type. Please check your files.\e[0m"
-        exit 1
+        echo -e "\e[31m[!] Cannot determine server type. Missing server files (e.g. server.jar).\e[0m"
+        echo -e "\e[33m[~] It looks like you wiped your server files. Resetting configuration for a fresh install...\e[0m"
+        rm -rf .nubilux
+        rm -f .nubilux_installed
+        exec /bin/bash /entrypoint.sh
     fi
 else
     # Interactive Setup Menu
