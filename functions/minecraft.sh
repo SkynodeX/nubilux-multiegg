@@ -83,7 +83,7 @@ function minecraft_menu {
     case $mc_choice in
         1)
             # Fetch paper
-            build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[-1]')
+            build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[0]')
             url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
             curl -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
             echo "$build" > .mc_build
@@ -101,7 +101,7 @@ function minecraft_menu {
             ;;
         4)
             # Fetch velocity
-            build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[-1]')
+            build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[0]')
             url=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${build}" | jq -r '.downloads["server:default"].url')
             curl -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" -o server.jar "$url"
             echo "$build" > .mc_build
@@ -145,7 +145,7 @@ function auto_update {
         echo -e "\e[36m[~] Auto-Update is enabled! Checking for updates...\e[0m"
         case $mc_choice in
             1)
-                build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[-1]')
+                build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/paper/versions/$version" | jq -r '.builds[0]')
                 if [ -n "$build" ] && [ "$build" != "null" ]; then
                     if [ "$build" != "$current_build" ]; then
                         echo -e "\e[36m[~] Updating Paper from build $current_build to $build...\e[0m"
@@ -173,7 +173,7 @@ function auto_update {
                 fi
                 ;;
             4)
-                build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[-1]')
+                build=$(curl -s -A "NubiluxMultiegg/1.0 (admin@nubilux.com)" "https://fill.papermc.io/v3/projects/velocity/versions/$version" | jq -r '.builds[0]')
                 if [ -n "$build" ] && [ "$build" != "null" ]; then
                     if [ "$build" != "$current_build" ]; then
                         echo -e "\e[36m[~] Updating Velocity from build $current_build to $build...\e[0m"
