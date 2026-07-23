@@ -42,7 +42,7 @@ if [ -f ".cache/nubilux/.installed" ]; then
     else
         echo -e "\e[31m[!] Cannot determine server type. Missing server files (e.g. server.jar).\e[0m"
         echo -e "\e[33m[~] It looks like you wiped your server files. Resetting configuration for a fresh install...\e[0m"
-        rm -rf .nubilux
+        rm -rf .cache/nubilux
         rm -f .nubilux_installed
         exec /bin/bash /entrypoint.sh
     fi
