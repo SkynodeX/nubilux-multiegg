@@ -208,8 +208,8 @@ print("unknown")
           fi
       fi
       
-      if [[ "$JAVA_CMD" == *java-21* ]] && [ "$OPTIMIZE_SERVER" == "1" ]; then
-          # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
+      if { [[ "$JAVA_CMD" == *java-21* ]] || [[ "$JAVA_CMD" == *java-25* ]]; } && [ "$OPTIMIZE_SERVER" == "1" ]; then
+          # EXTREME ZGC for Java 21/25 (Valorant Tier Zero-Lag Spikes)
           GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
       fi
 
