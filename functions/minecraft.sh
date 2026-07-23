@@ -243,7 +243,7 @@ print("unknown")
 ')
       fi
 
-      if [ "$detected_java" == "25" ] || [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
+      if [ "$detected_java" == "25" ] || [[ "$version" == 1.21.1* ]] || [[ "$version" == 1.21.2* ]] || [[ "$version" == 1.21.3* ]] || [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
           JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
       elif [ "$detected_java" == "21" ]; then
           JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
