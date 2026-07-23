@@ -17,8 +17,17 @@ echo -e "\e[1;36m=====================================\e[0m"
 echo -e "\e[1;33m Welcome to Nubilux Hosting Multiegg!\e[0m"
 echo -e "\e[1;36m=====================================\e[0m"
 
-# Check if environment is already configured
+# Auto-migrate old loose dotfiles to hidden directory for cleaner file manager
 if [ -f ".nubilux_installed" ]; then
+    mkdir -p .nubilux
+    mv .nubilux_installed .nubilux/.installed
+    [ -f .mc_version ] && mv .mc_version .nubilux/mc_version
+    [ -f .mc_choice ] && mv .mc_choice .nubilux/mc_choice
+    [ -f .mc_build ] && mv .mc_build .nubilux/mc_build
+fi
+
+# Check if environment is already configured
+if [ -f ".nubilux/.installed" ]; then
     echo -e "\e[32m[+] Server already configured. Booting...\e[0m"
     
     # Check what type of server it is
