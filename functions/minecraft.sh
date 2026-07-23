@@ -150,14 +150,14 @@ function boot_minecraft {
     # Base Aikar Flags
     GC_FLAGS="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
     
-    if [ "$JAVA_VERSION" == "21" ]; then 
+    if [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
+        JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
+    elif [ "$JAVA_VERSION" == "21" ]; then 
         JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
         if [ "$OPTIMIZE_SERVER" == "1" ]; then
             # EXTREME ZGC for Java 21 (Valorant Tier Zero-Lag Spikes)
             GC_FLAGS="-XX:+UseZGC -XX:+ZGenerational"
         fi
-    elif [[ "$version" == 26* ]] || [[ "$version" == 27* ]]; then
-        JAVA_CMD="/usr/lib/jvm/java-25-openjdk-amd64/bin/java"
     else
         JAVA_CMD="/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
     fi
